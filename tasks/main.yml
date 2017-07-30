@@ -18,26 +18,36 @@
     regexp: '^ZSH_THEME'
     state:  present
 
-- name: Copy .zshrc
-  copy:
-    src:  zshrc
-    dest: ~/.zshrc-rooland-provisioning
-
-- name: My zshrc contribution
-  lineinfile:
-    dest:   ~/.zshrc
-    line:   source ~/.zshrc-rooland-provisioning
-    regexp: '^source .+zshrc$'
+- name: Init files conributions
+  blockinfile:
+    block:  "{{ item.block_content }}"
+    create: yes
+    dest:   "~/.{{ item.file_name }}"
     state:  present
+  with_items:
+    - file_name: zshrc
+      block_content: |
+        export PATH=/usr/local/bin:$PATH
+        export RACK_ENV=development
+        export EDITOR="mvim -f"
+        export GPG_TTY=$(tty)
+    - file_name: zshenv
+      block_content: |
+        export PATH=/usr/local/share/npm/bin:~/.rvm/bin:/usr/local/bin:$PATH
+        # export CC=/usr/local/bin/gcc-4.2
+        export LC_CTYPE=en_US.UTF-8
+        export LANG=en_US.UTF-8
 
-- name: Link zshenv
-  file:
-    dest:   ~/.zshenv
-    src:    "{{ansible_env['PWD']}}/roles/zsh-terminal/files/zshenv"
-    state:  link
+        # Aliases
+        alias vudit="mvim ~/.vim/config/Vundlefile"
+        alias recd="cd ..;cd -"
+        alias m="mvim -S ./.session.vis"
+        alias marked="open -a Marked "
+
+        # OMZ config
+        DISABLE_UPDATE_PROMPT=true
 
 - name: Link Ag ignore file
-  file:
+  copy:
     dest:   ~/.agignore
-    src:    "{{ansible_env['PWD']}}/roles/zsh-terminal/files/agignore"
-    state:  link
+    src:    agignore
