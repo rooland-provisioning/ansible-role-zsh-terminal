@@ -1,0 +1,43 @@
+---
+- name: Install Oh my zsh
+  shell: curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+  args:
+    creates: ~/.oh-my-zsh
+
+- name: OMZ plugins
+  lineinfile:
+    dest:   ~/.zshrc
+    line:   'plugins=(git rvm terminalapp brew brew-cask vagrant ruby gitignore z)'
+    regexp: '^plugins'
+    state:  present
+
+- name: OMZ theme
+  lineinfile:
+    dest:   ~/.zshrc
+    line:   'ZSH_THEME="aussiegeek"'
+    regexp: '^ZSH_THEME'
+    state:  present
+
+- name: Copy .zshrc
+  copy:
+    src:  zshrc
+    dest: ~/.zshrc-rooland-provisioning
+
+- name: My zshrc contribution
+  lineinfile:
+    dest:   ~/.zshrc
+    line:   source ~/.zshrc-rooland-provisioning
+    regexp: '^source .+zshrc$'
+    state:  present
+
+- name: Link zshenv
+  file:
+    dest:   ~/.zshenv
+    src:    "{{ansible_env['PWD']}}/roles/zsh-terminal/files/zshenv"
+    state:  link
+
+- name: Link Ag ignore file
+  file:
+    dest:   ~/.agignore
+    src:    "{{ansible_env['PWD']}}/roles/zsh-terminal/files/agignore"
+    state:  link
