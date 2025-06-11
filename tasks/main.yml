@@ -7,7 +7,7 @@
 - name: OMZ plugins
   lineinfile:
     dest:   ~/.zshrc
-    line:   'plugins=(git rvm terminalapp brew brew-cask vagrant ruby gitignore z)'
+    line:   'plugins=(git rvm brew ruby gitignore z)'
     regexp: '^plugins'
     state:  present
 
@@ -29,7 +29,7 @@
       block_content: |
         export PATH=/usr/local/bin:$PATH
         export RACK_ENV=development
-        export EDITOR="mvim -f"
+        export EDITOR="vimr"
         export GPG_TTY=$(tty)
     - file_name: zshenv
       block_content: |
@@ -42,6 +42,7 @@
         alias vudit="mvim ~/.vim/config/Vundlefile"
         alias recd="cd ..;cd -"
         alias m="mvim -S ./.session.vis"
+        alias n="vimr --nvim -S ./.session.vis"
         alias marked="open -a Marked "
 
         # OMZ config
